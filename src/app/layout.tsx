@@ -25,6 +25,10 @@ export const metadata: Metadata = {
   description:
     "Konumunuza gelen yapılandırılmış hizmet siparişi: araç yıkama ve bakım, halı, koltuk ve cam.",
   applicationName: "Aladdin Premium Care",
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+  },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,

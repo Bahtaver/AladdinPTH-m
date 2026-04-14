@@ -30,25 +30,9 @@ export default async function HomePage() {
               <span className="text-sm font-semibold">Aladdin Premium Care</span>
             )}
           </Link>
-          <div className="flex shrink-0 items-center gap-3">
-            <Link
-              href="/profil"
-              className="flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-sm hover:border-emerald-200 hover:text-emerald-800 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:border-emerald-800 dark:hover:text-emerald-200"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-zinc-500" aria-hidden>
-                <path
-                  d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4 0-7 2-7 4v1h14v-1c0-2-3-4-7-4Z"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-              Profilim
-            </Link>
-            <p className="hidden text-xs text-zinc-500 lg:block">
-              Konumunuza gelen yapılandırılmış hizmet
-            </p>
-          </div>
+          <p className="hidden shrink-0 text-xs text-zinc-500 lg:block">
+            Konumunuza gelen yapılandırılmış hizmet
+          </p>
         </div>
       </header>
 

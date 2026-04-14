@@ -141,12 +141,6 @@ export default async function SiparisPage({ params, searchParams }: PageProps) {
           >
             ← Ana sayfa
           </Link>
-          <Link
-            href="/profil"
-            className="text-zinc-600 underline-offset-4 hover:underline dark:text-zinc-400"
-          >
-            Profilim
-          </Link>
         </div>
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-300">
           Rehberli sipariş

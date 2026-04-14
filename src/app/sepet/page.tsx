@@ -87,20 +87,14 @@ export default async function SepetPage({ searchParams }: PageProps) {
 
   return (
     <main className="mx-auto max-w-lg px-4 py-8 sm:py-10">
-      <header className="mb-6 flex items-center justify-between gap-3">
+      <header className="relative mb-6 flex items-center justify-center">
         <Link
           href="/"
-          className="text-xs font-medium text-emerald-700 underline-offset-4 hover:underline dark:text-emerald-300"
+          className="absolute left-0 text-xs font-medium text-emerald-700 underline-offset-4 hover:underline dark:text-emerald-300"
         >
           ← Ana sayfa
         </Link>
         <h1 className="text-sm font-semibold tracking-tight">Sepetim</h1>
-        <Link
-          href="/profil"
-          className="text-xs font-medium text-zinc-600 underline-offset-4 hover:underline dark:text-zinc-400"
-        >
-          Profilim
-        </Link>
       </header>
 
       {hata ? (

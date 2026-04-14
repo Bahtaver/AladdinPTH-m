@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { addOrderDraftToCart } from "@/app/actions/cartActions";
 import { beginOrder } from "@/app/actions/orderFlow";
+import { ServiceGuaranteePanel } from "@/components/commerce/ServiceGuaranteePanel";
 import { StepRail } from "@/components/commerce/StepRail";
 import { TrustPanel } from "@/components/commerce/TrustPanel";
 import {
@@ -16,6 +17,13 @@ import {
   needsCheckoutVerification,
 } from "@/lib/auth/checkoutVerification";
 import { quoteForRules } from "@/lib/pricing/engine";
+import {
+  CAR_WASH_DISPLAY_NAME,
+  CAR_WASH_ORDER_INTRO,
+  CAR_WASH_TRUST,
+  CAR_WASH_ZAMANLAMA,
+  CAR_WASH_CONTINUE_HINT,
+} from "@/config/carWashFlowCopy";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { CustomerAddressRow } from "@/types/database";
 import { AddressSection } from "./AddressSection";
@@ -83,10 +91,15 @@ export default async function SiparisPage({ params, searchParams }: PageProps) {
   }
 
   const trustRaw = svcConfig?.definition?.trust;
-  const trust =
+  const trustFromConfig =
     trustRaw && typeof trustRaw === "object" && !Array.isArray(trustRaw)
       ? (trustRaw as { title?: string; body?: string })
       : null;
+  const trust = slug === "car-wash" ? { title: CAR_WASH_TRUST.title, body: CAR_WASH_TRUST.body } : trustFromConfig;
+
+  const serviceDisplayName = slug === "car-wash" ? CAR_WASH_DISPLAY_NAME : service.name;
+  const serviceIntro =
+    slug === "car-wash" ? CAR_WASH_ORDER_INTRO : (service.long_description ?? null);
 
   let savedAddresses: CustomerAddressRow[] = [];
   if (draft?.serviceSlug === slug && draft.step === "address") {
@@ -146,12 +159,10 @@ export default async function SiparisPage({ params, searchParams }: PageProps) {
           Rehberli sipariş
         </p>
         <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-          {service.name}
+          {serviceDisplayName}
         </h1>
-        {service.long_description ? (
-          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-            {service.long_description}
-          </p>
+        {serviceIntro ? (
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{serviceIntro}</p>
         ) : null}
         <StepRail slug={slug} step={draft.step} />
       </header>
@@ -226,7 +237,8 @@ export default async function SiparisPage({ params, searchParams }: PageProps) {
                 slug={slug}
                 nextStep="address"
                 disabled={Boolean(cfgErr)}
-                label="Adres bilgisine geç"
+                label="Devam Et"
+                hint={slug === "car-wash" ? CAR_WASH_CONTINUE_HINT : undefined}
               />
             </div>
           ) : null}
@@ -234,12 +246,10 @@ export default async function SiparisPage({ params, searchParams }: PageProps) {
 
         <div className="space-y-4">
           <TrustPanel trust={trust} />
+          <ServiceGuaranteePanel />
           <div className="rounded-3xl border border-dashed border-zinc-200 p-4 text-xs leading-relaxed text-zinc-600 dark:border-zinc-800 dark:text-zinc-300">
-            <p>
-              Bu deneyim randevu takvimi değil: seçtiklerinizle hizmeti
-              yapılandırıyor, adresinize sipariş veriyorsunuz. Kesin saat
-              seçtirmiyoruz; ekip gün içi size yakın bir aralıkta ulaşır.
-            </p>
+            <p className="font-semibold text-zinc-800 dark:text-zinc-100">{CAR_WASH_ZAMANLAMA.title}</p>
+            <p className="mt-2">{CAR_WASH_ZAMANLAMA.body}</p>
           </div>
         </div>
       </div>

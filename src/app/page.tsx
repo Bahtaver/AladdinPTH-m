@@ -38,16 +38,15 @@ export default async function HomePage() {
 
       <main className="mx-auto max-w-5xl space-y-10 px-4 py-10 sm:py-14">
         <section className="space-y-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-300">
-            Hizmet mağazası
+          <p className="text-sm font-semibold tracking-tight text-emerald-700 dark:text-emerald-300">
+            Aladdin
           </p>
           <h1 className="max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
-            Evinize ve aracınıza güvenilir, adım adım sipariş deneyimi
+            Temizlik ve Bakımda Yeni Standart
           </h1>
           <p className="max-w-2xl text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-            Takvim seçtirmiyoruz: önce hizmeti seçin, detayları rehberde
-            tamamlayın, canlı fiyatı görün, adresinizi girin ve onaylayın. Zaman
-            tercihiniz hafif bir pencere olarak kalır.
+            Şeffaf fiyatlandırma, eğitimli ekip ve randevu takibiyle evinizde ve aracınızda
+            profesyonel temizlik hizmeti sunuyoruz.
           </p>
         </section>
 

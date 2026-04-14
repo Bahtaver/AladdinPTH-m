@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getHomeServiceCardCopy } from "@/config/homeServiceCardCopy";
 import { getServiceCardCoverPath } from "@/config/homeServiceCardMedia";
 import type { ServiceRow } from "@/types/database";
 import { publicServiceAssetUrl } from "@/lib/storage/serviceAssetUrl";
@@ -10,6 +11,10 @@ type Props = {
 
 export function ServiceCard({ service }: Props) {
   const slug = service.slug ?? "";
+  const cardCopy = getHomeServiceCardCopy(slug);
+  const title = cardCopy?.title ?? service.name;
+  const description = cardCopy?.description ?? service.short_description ?? null;
+  const ctaLabel = cardCopy?.ctaLabel ?? "Siparişe başla";
   const coverPath = getServiceCardCoverPath(slug, service.cover_image_path);
   const img = publicServiceAssetUrl(coverPath);
 
@@ -35,11 +40,11 @@ export function ServiceCard({ service }: Props) {
       <div className="flex flex-1 flex-col gap-3 p-5">
         <div>
           <h2 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-            {service.name}
+            {title}
           </h2>
-          {service.short_description ? (
+          {description ? (
             <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-              {service.short_description}
+              {description}
             </p>
           ) : null}
         </div>
@@ -49,7 +54,7 @@ export function ServiceCard({ service }: Props) {
             type="submit"
             className="inline-flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
           >
-            Siparişe başla
+            {ctaLabel}
           </button>
         </form>
       </div>

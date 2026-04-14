@@ -2,6 +2,10 @@ import { updateDraftField, saveTouchUpDetails } from "@/app/actions/orderFlow";
 import { VisualChoiceCard } from "@/components/commerce/VisualChoiceCard";
 import { PriceDisplay } from "@/components/commerce/PriceDisplay";
 import {
+  CAR_WASH_CONFIGURE_HEADING,
+  CAR_WASH_CONFIGURE_SUB,
+} from "@/config/carWashFlowCopy";
+import {
   carWashPackageMedia,
   carWashVehicleMedia,
   carpetFiberMedia,
@@ -59,9 +63,18 @@ export function ConfigureSection({ slug, draft, quote }: Props) {
     const touchUp = c.touch_up_requested === true;
     return (
       <div className="space-y-8">
+        <header className="space-y-2 border-b border-zinc-100 pb-6 dark:border-zinc-800">
+          <h2 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+            {CAR_WASH_CONFIGURE_HEADING}
+          </h2>
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+            {CAR_WASH_CONFIGURE_SUB}
+          </p>
+        </header>
+
         <section className="space-y-3">
           <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
-            1. Paket
+            1. Hizmet Paketi
           </p>
           <div className="grid grid-cols-3 gap-2 sm:gap-3">
             {carWashPackageMedia.map((item) => (
@@ -80,7 +93,7 @@ export function ConfigureSection({ slug, draft, quote }: Props) {
 
         <section className="space-y-3">
           <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
-            2. Araç sınıfı
+            2. Araç Tipi
           </p>
           <div className="grid grid-cols-3 gap-2 sm:gap-3">
             {carWashVehicleMedia.map((item) => (
@@ -99,13 +112,15 @@ export function ConfigureSection({ slug, draft, quote }: Props) {
 
         <section className="space-y-3">
           <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
-            3. Rötuş boya (isteğe bağlı)
+            3. Ek Hizmet (İsteğe Bağlı)
           </p>
-          <p className="text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
-            Küçük yüzey çizikleri için aynı ziyarette eklenebilir. Renk eşleşmesi
-            fabrika koduna bağlıdır; sonuç garantisi verilmez — detaylar aşağıdaki
-            feragatnamede.
-          </p>
+          <div>
+            <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Rötuş Boya</p>
+            <p className="mt-1 text-xs leading-relaxed text-zinc-600 dark:text-zinc-300">
+              Küçük yüzey çizikleri için aynı ziyarette uygulanabilir. Renk uyumu araç koduna göre
+              yapılır.
+            </p>
+          </div>
           <div className="grid gap-2 sm:grid-cols-2">
             <Choice
               slug={slug}
@@ -113,7 +128,7 @@ export function ConfigureSection({ slug, draft, quote }: Props) {
               value="false"
               selected={!touchUp}
             >
-              Hayır, yalnız yıkama / bakım
+              Dahil etme
             </Choice>
             <Choice
               slug={slug}
@@ -121,7 +136,7 @@ export function ConfigureSection({ slug, draft, quote }: Props) {
               value="true"
               selected={touchUp}
             >
-              Evet, rötuş da eklensin
+              Ekle
             </Choice>
           </div>
         </section>
@@ -149,9 +164,9 @@ export function ConfigureSection({ slug, draft, quote }: Props) {
                   className="mt-1 size-4 rounded border-zinc-300 text-emerald-600"
                 />
                 <span>
-                  Rötuşun yalnızca küçük yüzey çiziklerini kapsadığını; renk
-                  eşleşmesinin fabrika koduna bağlı olduğunu ve sonuç garantisi
-                  verilmediğini kabul ediyorum.
+                  Rötuşun yalnızca küçük yüzey çizikleri için olduğunu; rengin aracınızın
+                  fabrika koduna göre uyarlandığını ve sonucun yüzey durumuna bağlı
+                  değişebileceğini kabul ediyorum.
                 </span>
               </label>
               <button
@@ -164,16 +179,16 @@ export function ConfigureSection({ slug, draft, quote }: Props) {
           </section>
         ) : null}
 
-        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 pt-6 dark:border-zinc-800">
-          <div className="text-sm text-zinc-600 dark:text-zinc-300">
-            Canlı tutar
+        <footer className="space-y-2 border-t border-zinc-200 pt-6 dark:border-zinc-800">
+          <div>
+            <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">Anlık Toplam</p>
             <div className="mt-1">
               <PriceDisplay amount={quote.total} currency={quote.currency} />
             </div>
+            <p className="mt-2 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+              Seçimlerinize göre fiyat otomatik hesaplanır. Gizli ücret yoktur.
+            </p>
           </div>
-          <p className="text-xs text-zinc-500">
-            Fiyatlar kural motorundan hesaplanır; arayüzde sabit fiyat yoktur.
-          </p>
         </footer>
       </div>
     );

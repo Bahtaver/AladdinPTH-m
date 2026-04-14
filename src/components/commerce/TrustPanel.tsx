@@ -8,7 +8,7 @@ export function TrustPanel({ trust }: { trust: Trust | null }) {
         <p className="font-semibold tracking-tight">{trust.title}</p>
       ) : null}
       {trust.body ? (
-        <p className="mt-2 leading-relaxed text-emerald-900/90 dark:text-emerald-100/90">
+        <p className="mt-2 whitespace-pre-line leading-relaxed text-emerald-900/90 dark:text-emerald-100/90">
           {trust.body}
         </p>
       ) : null}

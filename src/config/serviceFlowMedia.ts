@@ -7,17 +7,17 @@ export const carWashPackageMedia = [
   {
     value: "interior" as const,
     storagePath: "arac-ic-gorsel.png",
-    label: "İç detay",
+    label: "İç Detaylı Temizlik",
   },
   {
     value: "exterior" as const,
     storagePath: "dis-gorsel.png",
-    label: "Dış yıkama",
+    label: "Dış Yıkama",
   },
   {
     value: "interior_exterior" as const,
     storagePath: "ic-dis.png",
-    label: "İç + dış",
+    label: "İç + Dış Bakım",
   },
 ];
 
@@ -35,7 +35,7 @@ export const carWashVehicleMedia = [
   {
     value: "pickup" as const,
     storagePath: "kamyonet.png",
-    label: "Kamyonet / pickup",
+    label: "Kamyonet / Pickup",
   },
 ];
 

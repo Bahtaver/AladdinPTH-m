@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { CartCheckoutForm, type CartCheckoutLine } from "@/app/sepet/CartCheckoutForm";
 import { CartLineItems, type CartLineDisplay } from "@/app/sepet/CartLineItems";
 import { SepetCheckoutGate } from "@/app/sepet/SepetCheckoutGate";
@@ -18,7 +18,8 @@ type Props = {
   defaultGateOpen: boolean;
 };
 
-export function SepetCartWithCheckout({
+/** `key={lineIdsKey}` ile yeniden mount: sepet satırları değişince seçim sıfırlanır (effect’siz). */
+function SepetCartWithCheckoutInner({
   checkoutFormId,
   displayLines,
   favoritedServiceIds,
@@ -28,15 +29,9 @@ export function SepetCartWithCheckout({
   needsAuthVerification,
   defaultGateOpen,
 }: Props) {
-  const lineIdsKey = useMemo(() => pricedLines.map((l) => l.id).join(","), [pricedLines]);
-
   const [selectedIds, setSelectedIds] = useState<Set<string>>(
     () => new Set(pricedLines.map((l) => l.id)),
   );
-
-  useEffect(() => {
-    setSelectedIds(new Set(pricedLines.map((l) => l.id)));
-  }, [lineIdsKey, pricedLines]);
 
   const filteredLines = useMemo(() => {
     const allow = checkoutFormId
@@ -97,4 +92,12 @@ export function SepetCartWithCheckout({
       </section>
     </div>
   );
+}
+
+export function SepetCartWithCheckout(props: Props) {
+  const lineIdsKey = useMemo(
+    () => props.pricedLines.map((l) => l.id).join(","),
+    [props.pricedLines],
+  );
+  return <SepetCartWithCheckoutInner key={lineIdsKey} {...props} />;
 }

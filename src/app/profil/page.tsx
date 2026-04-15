@@ -11,7 +11,6 @@ import {
 import {
   AccordionIconAccount,
   AccordionIconHome,
-  AccordionIconInfo,
   AccordionIconMail,
   AccordionIconPhone,
   AccordionIconProfile,
@@ -80,17 +79,6 @@ export default async function ProfilPage() {
       </header>
 
       <main className="mx-auto max-w-lg space-y-3 px-4 py-5">
-        <div className="flex gap-3 rounded-2xl border border-dashed border-emerald-200/70 bg-gradient-to-br from-emerald-50/90 to-zinc-50 px-4 py-3.5 shadow-sm dark:border-emerald-900/40 dark:from-emerald-950/30 dark:to-zinc-950/40 sm:gap-4 sm:px-5 sm:py-4">
-          <span className="flex size-11 shrink-0 items-center justify-center self-start rounded-xl bg-white text-emerald-700 shadow-sm ring-1 ring-emerald-100 dark:bg-zinc-950 dark:text-emerald-400 dark:ring-emerald-900/50 sm:size-12">
-            <AccordionIconInfo className="size-6 sm:size-7" />
-          </span>
-          <p className="min-w-0 flex-1 text-sm leading-relaxed text-zinc-700 dark:text-zinc-200">
-            Aşağıdaki <strong>satırlara dokunarak</strong> bölümleri açıp kapatabilirsiniz.
-            Her satırda <strong>ikon</strong>, kısa özet ve sağda <strong>ok</strong> ile «Aç»
-            / «Açık» etiketi durumu gösterir.
-          </p>
-        </div>
-
         <ProfileAccordion
           title="Hesap ve doğrulama"
           closedHint="Misafir oturumu, hesabı yükseltme ve sipariş doğrulaması (ayrı akış)."

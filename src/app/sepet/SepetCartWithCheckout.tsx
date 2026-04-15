@@ -59,12 +59,10 @@ function SepetCartWithCheckoutInner({
     <div className="space-y-2">
       <section className="space-y-3">
         <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">
-          Kalemler
+          Hizmetler
         </h2>
         <p className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
-          <strong>Sol kutu</strong> bu siparişe dahil etmek içindir (varsayılan hepsi işaretli);
-          dahil etmek istemediklerinizin işaretini kaldırın — sepette kalırlar, sonra
-          verebilirsiniz. <strong>Çöp kutusu</strong> kalemi sepetten tamamen siler.
+          Bu siparişe dahil etmek istediklerinizi seçin. Seçilmeyen hizmetler sepetinizde kalır.
         </p>
         {CHECKOUT_VERIFICATION_ENABLED && needsAuthVerification ? (
           <p className="rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-950 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-100">

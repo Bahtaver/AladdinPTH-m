@@ -32,11 +32,10 @@ export function SepetCheckoutGate({ defaultOpen = false, children }: Props) {
             onClick={() => setOpen(true)}
             className="w-full rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500"
           >
-            Teslimat ve onay
+            Adres ve Onay
           </button>
           <p className="text-center text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
-            Üstte işaretli kalemler için adres ve iletişim bilgilerini bu adımda doldurursunuz.
-            İşareti kaldırdıklarınız bu siparişe girmez; sepette kalır.
+            Planlamayı tamamlamak için adres bilgilerinizi girin.
           </p>
         </div>
       ) : null}
@@ -51,7 +50,7 @@ export function SepetCheckoutGate({ defaultOpen = false, children }: Props) {
       >
         {open ? (
           <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">
-            Teslimat ve onay
+            Adres ve Onay
           </h2>
         ) : null}
         {children}

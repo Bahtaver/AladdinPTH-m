@@ -96,6 +96,10 @@ export default async function SepetPage({ searchParams }: PageProps) {
         </Link>
         <h1 className="text-sm font-semibold tracking-tight">Sepetim</h1>
       </header>
+      <p className="mb-5 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
+        Aynı adrese göndermek istediğiniz hizmetleri seçin, diğerlerini daha sonra planlamak üzere
+        sepette bırakabilirsiniz.
+      </p>
 
       {hata ? (
         <div

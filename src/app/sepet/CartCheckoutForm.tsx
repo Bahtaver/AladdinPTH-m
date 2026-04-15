@@ -57,11 +57,14 @@ export function CartCheckoutForm({
   return (
     <div className="space-y-6">
       <div className="rounded-3xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
-        <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Sepet özeti</p>
+        <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Adres ve Onay</p>
+        <p className="mt-2 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+          Seçtiğiniz hizmetler için adres ve iletişim bilgilerinizi girin. Tüm işlemler tek adreste
+          planlanır.
+        </p>
         {lines.length === 0 ? (
           <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-300">
-            Bu sipariş için üstte işaretli kalem yok. Özete yansıması için en az bir kalemi işaretleyin;
-            işareti kaldırdıklarınız sepette kalır, bu siparişe dahil edilmez.
+            Bu adrese dahil etmek için en az bir hizmet seçin.
           </p>
         ) : (
           <ul className="mt-3 space-y-4 text-sm">
@@ -90,13 +93,9 @@ export function CartCheckoutForm({
           </ul>
         )}
         <div className="mt-4 flex items-center justify-between border-t border-zinc-200 pt-4 text-base font-semibold dark:border-zinc-800">
-          <span>Genel toplam (işaretli kalemler)</span>
+          <span>Genel toplam</span>
           <PriceDisplay amount={grand.total} currency={grand.currency} />
         </div>
-        <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-          Sipariş oluşturulurken yalnızca üst listede işaretli kalemler hesaba katılır; işareti
-          kaldırdıklarınız sepette kalır.
-        </p>
       </div>
 
       {CHECKOUT_VERIFICATION_ENABLED && needsAuthVerification ? (

@@ -91,77 +91,97 @@ export function CartLineItems({ lines, favoritedServiceIds, checkoutFormId, sele
 
   return (
     <ul className="space-y-3">
-      {lines.map((line) => (
-        <li
-          key={line.id}
-          className="flex items-start gap-3 rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
-        >
-          {checkoutFormId ? (
-            <input
-              id={`cart-include-${line.id}`}
-              form={checkoutFormId}
-              type="checkbox"
-              name="cart_item_id"
-              value={line.id}
-              {...(selection
-                ? {
-                    checked: selection.selectedIds.has(line.id),
-                    onChange: (e: ChangeEvent<HTMLInputElement>) =>
-                      selection.onChange(line.id, e.target.checked),
-                  }
-                : { defaultChecked: true })}
-              className="mt-1 size-4 shrink-0 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500"
-              aria-label={`${line.serviceName} — bu siparişe dahil et`}
-            />
-          ) : (
-            <span className="mt-1 size-4 shrink-0" aria-hidden />
-          )}
-          {checkoutFormId ? (
-            <label
-              htmlFor={`cart-include-${line.id}`}
-              className="flex min-w-0 flex-1 cursor-pointer items-start gap-3"
-            >
-              <LineMain line={line} />
-            </label>
-          ) : (
-            <div className="flex min-w-0 flex-1 items-start gap-3">
-              <LineMain line={line} />
+      {lines.map((line) => {
+        const included = checkoutFormId
+          ? (selection ? selection.selectedIds.has(line.id) : true)
+          : false;
+        return (
+          <li
+            key={line.id}
+            className="flex items-start gap-3 rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+          >
+            {checkoutFormId ? (
+              <input
+                id={`cart-include-${line.id}`}
+                form={checkoutFormId}
+                type="checkbox"
+                name="cart_item_id"
+                value={line.id}
+                {...(selection
+                  ? {
+                      checked: selection.selectedIds.has(line.id),
+                      onChange: (e: ChangeEvent<HTMLInputElement>) =>
+                        selection.onChange(line.id, e.target.checked),
+                    }
+                  : { defaultChecked: true })}
+                className="mt-1 size-4 shrink-0 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500"
+                aria-label={`${line.serviceName} — bu siparişe dahil et`}
+              />
+            ) : (
+              <span className="mt-1 size-4 shrink-0" aria-hidden />
+            )}
+            {checkoutFormId ? (
+              <label
+                htmlFor={`cart-include-${line.id}`}
+                className="flex min-w-0 flex-1 cursor-pointer items-start gap-3"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="flex min-w-0 items-start gap-3">
+                    <LineMain line={line} />
+                  </div>
+                  <span
+                    className={[
+                      "mt-1 block text-xs font-medium",
+                      included
+                        ? "text-emerald-700 dark:text-emerald-300"
+                        : "text-zinc-500 dark:text-zinc-400",
+                    ].join(" ")}
+                  >
+                    {included ? "✓ Bu adrese dahil et" : "Bu adrese dahil et"}
+                  </span>
+                </div>
+              </label>
+            ) : (
+              <div className="flex min-w-0 flex-1 items-start gap-3">
+                <LineMain line={line} />
+              </div>
+            )}
+            <div className="flex shrink-0 items-center gap-1.5 self-start pt-0.5 sm:gap-2">
+              <PriceDisplay amount={line.total} currency={line.currency} />
+              <form action={toggleFavoriteFromCartItemForm} className="shrink-0">
+                <input type="hidden" name="cart_item_id" value={line.id} />
+                <button
+                  type="submit"
+                  className={[
+                    "flex size-10 items-center justify-center rounded-xl border transition-colors",
+                    favorited.has(line.serviceId)
+                      ? "border-rose-400 bg-rose-500 text-white hover:bg-rose-600 dark:border-rose-500 dark:bg-rose-600 dark:hover:bg-rose-500"
+                      : "border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 dark:border-rose-900/45 dark:bg-rose-950/35 dark:text-rose-300 dark:hover:bg-rose-950/55",
+                  ].join(" ")}
+                  aria-label={favorited.has(line.serviceId) ? "Favorilerden çıkar" : "Favorilere ekle"}
+                >
+                  {favorited.has(line.serviceId) ? (
+                    <HeartFill24 className="size-5 shrink-0" />
+                  ) : (
+                    <HeartStroke24 className="size-5 shrink-0" />
+                  )}
+                </button>
+              </form>
+              <form action={removeCartItemFromForm} className="shrink-0">
+                <input type="hidden" name="cart_item_id" value={line.id} />
+                <button
+                  type="submit"
+                  className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-2.5 text-xs font-semibold text-red-700 hover:bg-red-100 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200 dark:hover:bg-red-950/60"
+                  aria-label="Kaldır"
+                >
+                  <TrashIcon />
+                  Kaldır
+                </button>
+              </form>
             </div>
-          )}
-          <div className="flex shrink-0 items-center gap-1.5 self-start pt-0.5 sm:gap-2">
-            <PriceDisplay amount={line.total} currency={line.currency} />
-            <form action={toggleFavoriteFromCartItemForm} className="shrink-0">
-              <input type="hidden" name="cart_item_id" value={line.id} />
-              <button
-                type="submit"
-                className={[
-                  "flex size-10 items-center justify-center rounded-xl border transition-colors",
-                  favorited.has(line.serviceId)
-                    ? "border-rose-400 bg-rose-500 text-white hover:bg-rose-600 dark:border-rose-500 dark:bg-rose-600 dark:hover:bg-rose-500"
-                    : "border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 dark:border-rose-900/45 dark:bg-rose-950/35 dark:text-rose-300 dark:hover:bg-rose-950/55",
-                ].join(" ")}
-                aria-label={favorited.has(line.serviceId) ? "Favorilerden çıkar" : "Favorilere ekle"}
-              >
-                {favorited.has(line.serviceId) ? (
-                  <HeartFill24 className="size-5 shrink-0" />
-                ) : (
-                  <HeartStroke24 className="size-5 shrink-0" />
-                )}
-              </button>
-            </form>
-            <form action={removeCartItemFromForm} className="shrink-0">
-              <input type="hidden" name="cart_item_id" value={line.id} />
-              <button
-                type="submit"
-                className="flex size-10 items-center justify-center rounded-xl border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200 dark:hover:bg-red-950/60"
-                aria-label="Sepetten sil"
-              >
-                <TrashIcon />
-              </button>
-            </form>
-          </div>
-        </li>
-      ))}
+          </li>
+        );
+      })}
     </ul>
   );
 }

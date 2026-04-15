@@ -24,7 +24,9 @@ export default async function HomePage() {
                 height={192}
                 className="h-14 w-auto max-w-[min(62vw,13.5rem)] object-contain object-left sm:h-24 sm:max-w-[min(48vw,24rem)] lg:h-[7.25rem] lg:max-w-[min(38vw,30rem)]"
                 priority
-                unoptimized
+                fetchPriority="high"
+                sizes="(max-width: 640px) 62vw, (max-width: 1024px) 48vw, 30rem"
+                quality={65}
               />
             ) : (
               <span className="text-sm font-semibold">Aladdin Premium Care</span>

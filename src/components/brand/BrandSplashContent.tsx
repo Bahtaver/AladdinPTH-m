@@ -17,8 +17,10 @@ export function BrandSplashContent({ logoUrl }: Props) {
           alt=""
           width={960}
           height={288}
-          unoptimized
           priority
+          fetchPriority="high"
+          sizes="(max-width: 640px) 92vw, 640px"
+          quality={65}
           className="h-[14rem] w-auto max-w-[min(92vw,40rem)] object-contain object-center opacity-95 sm:h-[17rem] motion-safe:animate-[brandPulse_1.4s_ease-in-out_infinite]"
         />
       ) : (

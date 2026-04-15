@@ -28,10 +28,10 @@ export function ServiceCard({ service, imagePriority = false }: Props) {
             alt=""
             fill
             className="object-contain object-center"
-            sizes="(max-width:768px) 100vw, 33vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 340px"
             priority={imagePriority}
             fetchPriority={imagePriority ? "high" : "auto"}
-            quality={75}
+            quality={65}
           />
         ) : (
           <div className="flex h-full items-center justify-center text-sm text-zinc-500">

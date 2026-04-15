@@ -179,7 +179,7 @@ export function SiteDock() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 overflow-visible border-t border-zinc-200 bg-white/95 pb-[env(safe-area-inset-bottom,0px)] backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95"
+      className="fixed bottom-0 left-0 right-0 z-40 overflow-visible border-t border-zinc-200 bg-white/95 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95"
       aria-label="Ana gezinme"
     >
       <div className="mx-auto grid max-w-lg grid-cols-5 items-end gap-1 px-1.5 py-2">

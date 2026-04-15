@@ -39,21 +39,21 @@ export default async function FavorilerPage() {
       </header>
 
       <p className="mb-5 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
-        Kaydettiğiniz hizmetler burada listelenir; en son güncellediğiniz üstte. Sepetten çıkmaz — yalnızca
-        kalp ile eklenir veya güncellenir. Silmek için sepette çöp kutusunu kullanın.
+        Beğendiğiniz hizmetleri burada saklayın, istediğiniz zaman sepete ekleyip planlamaya devam
+        edin.
       </p>
 
       {rows.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-zinc-200 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-950">
-          <p className="text-sm text-zinc-600 dark:text-zinc-300">Henüz favori yok.</p>
+          <p className="text-sm text-zinc-600 dark:text-zinc-300">Henüz favori hizmetiniz yok</p>
           <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-            Sepetteki bir kalemde kalp simgesine dokunarak buraya ekleyebilirsiniz.
+            Hizmetleri incelerken kalp ikonuna dokunarak buraya ekleyebilirsiniz.
           </p>
           <Link
-            href="/sepet"
+            href="/"
             className="mt-5 inline-flex w-full justify-center rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-500"
           >
-            Sepetime git
+            Keşfet
           </Link>
         </div>
       ) : (

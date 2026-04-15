@@ -1,10 +1,10 @@
 import { updateDraftField, saveTouchUpDetails } from "@/app/actions/orderFlow";
+import { CarpetSqmField } from "@/components/commerce/CarpetSqmField";
 import { VisualChoiceCard } from "@/components/commerce/VisualChoiceCard";
 import { PriceDisplay } from "@/components/commerce/PriceDisplay";
-import {
-  CAR_WASH_CONFIGURE_HEADING,
-  CAR_WASH_CONFIGURE_SUB,
-} from "@/config/carWashFlowCopy";
+import { WindowCountStepper } from "@/components/commerce/WindowCountStepper";
+import { CAR_WASH_CONFIGURE_HEADER } from "@/config/carWashFlowCopy";
+import { CONFIGURE_HEADER_COPY } from "@/config/homeServiceOrderCopy";
 import {
   carWashPackageMedia,
   carWashVehicleMedia,
@@ -19,6 +19,7 @@ type Props = {
   slug: string;
   draft: OrderDraft;
   quote: PriceQuote;
+  showReadyNote?: boolean;
 };
 
 function Choice({
@@ -54,7 +55,51 @@ function Choice({
   );
 }
 
-export function ConfigureSection({ slug, draft, quote }: Props) {
+function ConfigurePriceFooter({
+  quote,
+  variant,
+}: {
+  quote: PriceQuote;
+  variant: "dynamic" | "sofa-fixed";
+}) {
+  const sub =
+    variant === "sofa-fixed"
+      ? "Sabit paket fiyatları uygulanır. Ek ücret sürprizi yoktur."
+      : "Seçimlerinize göre fiyat otomatik hesaplanır. Gizli ücret yoktur.";
+  return (
+    <footer className="space-y-2 border-t border-zinc-200 pt-6 dark:border-zinc-800">
+      <div>
+        <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">Anlık Toplam</p>
+        <div className="mt-1">
+          <PriceDisplay amount={quote.total} currency={quote.currency} />
+        </div>
+        <p className="mt-2 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">{sub}</p>
+      </div>
+    </footer>
+  );
+}
+
+function FlowIntroHeader({ title, description }: { title: string; description: string }) {
+  return (
+    <header className="space-y-2 border-b border-zinc-100 pb-6 dark:border-zinc-800">
+      <h2 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+        {title}
+      </h2>
+      <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{description}</p>
+    </header>
+  );
+}
+
+function ReadyNote() {
+  return (
+    <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm dark:border-emerald-800/80 dark:bg-emerald-950/35">
+      <p className="font-semibold text-emerald-900 dark:text-emerald-100">✔ Seçimleriniz hazır</p>
+      <p className="mt-1 text-emerald-800/90 dark:text-emerald-200">Tamamlamanıza 1 adım kaldı</p>
+    </div>
+  );
+}
+
+export function ConfigureSection({ slug, draft, quote, showReadyNote = false }: Props) {
   const c = draft.configuration;
 
   if (slug === "car-wash") {
@@ -65,10 +110,10 @@ export function ConfigureSection({ slug, draft, quote }: Props) {
       <div className="space-y-8">
         <header className="space-y-2 border-b border-zinc-100 pb-6 dark:border-zinc-800">
           <h2 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-            {CAR_WASH_CONFIGURE_HEADING}
+            {CAR_WASH_CONFIGURE_HEADER.title}
           </h2>
           <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-            {CAR_WASH_CONFIGURE_SUB}
+            {CAR_WASH_CONFIGURE_HEADER.description}
           </p>
         </header>
 
@@ -179,29 +224,37 @@ export function ConfigureSection({ slug, draft, quote }: Props) {
           </section>
         ) : null}
 
-        <footer className="space-y-2 border-t border-zinc-200 pt-6 dark:border-zinc-800">
-          <div>
-            <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">Anlık Toplam</p>
-            <div className="mt-1">
-              <PriceDisplay amount={quote.total} currency={quote.currency} />
-            </div>
-            <p className="mt-2 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
-              Seçimlerinize göre fiyat otomatik hesaplanır. Gizli ücret yoktur.
-            </p>
-          </div>
-        </footer>
+        {showReadyNote ? <ReadyNote /> : null}
+        <ConfigurePriceFooter quote={quote} variant="dynamic" />
       </div>
     );
   }
 
   if (slug === "carpet-cleaning") {
     const fiber = String(c.fiber ?? "");
+    const sqmDefault = c.sqm != null && Number.isFinite(Number(c.sqm)) ? String(c.sqm) : "";
+    const copy = CONFIGURE_HEADER_COPY["carpet-cleaning"];
     return (
       <div className="space-y-8">
+        <FlowIntroHeader title={copy.title} description={copy.description} />
+
         <section className="space-y-3">
-          <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
-            1. Elyaf tipi
-          </p>
+          <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">1. Halı Bilgisi</p>
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+              Metrekare (m²)
+            </p>
+            <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-300">
+              Halının toplam alanını girin
+            </p>
+            <div className="mt-2">
+              <CarpetSqmField slug={slug} defaultValue={sqmDefault} />
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-3">
+          <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">2. Elyaf Türü</p>
           <div className="grid grid-cols-2 gap-2 sm:gap-3">
             {carpetFiberMedia.map((item) => (
               <VisualChoiceCard
@@ -215,62 +268,26 @@ export function ConfigureSection({ slug, draft, quote }: Props) {
               />
             ))}
           </div>
+          <p className="text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+            Elyaf türüne göre uygun temizlik yöntemi uygulanır.
+          </p>
         </section>
 
-        {fiber ? (
-          <section className="space-y-3">
-            <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
-              2. Tahmini alan (m²)
-            </p>
-            <form
-              action={updateDraftField}
-              className="flex flex-col gap-3 sm:flex-row sm:items-end"
-            >
-              <input type="hidden" name="slug" value={slug} />
-              <input type="hidden" name="field" value="sqm" />
-              <label className="flex-1 text-sm text-zinc-600 dark:text-zinc-300">
-                Metrekare
-                <input
-                  name="value"
-                  type="number"
-                  inputMode="decimal"
-                  min={1}
-                  step={0.5}
-                  defaultValue={String(c.sqm ?? "")}
-                  className="mt-1 w-full rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-base text-zinc-900 outline-none ring-emerald-500/40 focus:ring-4 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
-                  required
-                />
-              </label>
-              <button
-                type="submit"
-                className="rounded-2xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
-              >
-                Güncelle
-              </button>
-            </form>
-          </section>
-        ) : null}
-
-        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 pt-6 dark:border-zinc-800">
-          <div className="text-sm text-zinc-600 dark:text-zinc-300">
-            Canlı tutar
-            <div className="mt-1">
-              <PriceDisplay amount={quote.total} currency={quote.currency} />
-            </div>
-          </div>
-        </footer>
+        {showReadyNote ? <ReadyNote /> : null}
+        <ConfigurePriceFooter quote={quote} variant="dynamic" />
       </div>
     );
   }
 
   if (slug === "sofa-cleaning") {
     const sofaType = String(c.sofa_type ?? "");
+    const copy = CONFIGURE_HEADER_COPY["sofa-cleaning"];
     return (
-      <div className="space-y-6">
+      <div className="space-y-8">
+        <FlowIntroHeader title={copy.title} description={copy.description} />
+
         <section className="space-y-3">
-          <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
-            Koltuk düzeni
-          </p>
+          <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">1. Koltuk Düzeni</p>
           <div className="grid grid-cols-2 gap-2 sm:gap-3">
             {sofaTypeMedia.map((item) => (
               <VisualChoiceCard
@@ -284,65 +301,45 @@ export function ConfigureSection({ slug, draft, quote }: Props) {
               />
             ))}
           </div>
+          <p className="text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+            Seçiminize göre sabit paket fiyatı uygulanır.
+          </p>
         </section>
-        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 pt-6 dark:border-zinc-800">
-          <div className="text-sm text-zinc-600 dark:text-zinc-300">
-            Canlı tutar
-            <div className="mt-1">
-              <PriceDisplay amount={quote.total} currency={quote.currency} />
-            </div>
-          </div>
-        </footer>
+
+        {showReadyNote ? <ReadyNote /> : null}
+        <ConfigurePriceFooter quote={quote} variant="sofa-fixed" />
       </div>
     );
   }
 
   if (slug === "window-cleaning") {
     const balcony = c.balcony_glass === true;
+    const windowCount = Number(c.window_count ?? 0);
+    const copy = CONFIGURE_HEADER_COPY["window-cleaning"];
     return (
       <div className="space-y-8">
-        <section className="space-y-3">
-          <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
-            Standart pencereler
-          </p>
-          <form
-            action={updateDraftField}
-            className="flex flex-col gap-3 sm:flex-row sm:items-end"
-          >
-            <input type="hidden" name="slug" value={slug} />
-            <input type="hidden" name="field" value="window_count" />
-            <label className="flex-1 text-sm text-zinc-600 dark:text-zinc-300">
-              Adet
-              <input
-                name="value"
-                type="number"
-                inputMode="numeric"
-                min={0}
-                defaultValue={String(c.window_count ?? 0)}
-                className="mt-1 w-full rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-base text-zinc-900 outline-none ring-emerald-500/40 focus:ring-4 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
-              />
-            </label>
-            <button
-              type="submit"
-              className="rounded-2xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
-            >
-              Güncelle
-            </button>
-          </form>
-        </section>
+        <FlowIntroHeader title={copy.title} description={copy.description} />
 
         <section className="space-y-3">
           <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
-            Balkon cam sistemi
+            1. Standart Pencereler
           </p>
+          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Adet seçimi
+          </p>
+          <div className="mt-2">
+            <WindowCountStepper slug={slug} count={windowCount} />
+          </div>
+          <p className="text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+            Her pencere için ayrı hesaplama yapılır.
+          </p>
+        </section>
+
+        <section className="space-y-3">
+          <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">2. Balkon Cam Sistemi</p>
           <div className="grid gap-2 sm:grid-cols-2">
-            <Choice
-              slug={slug}
-              field="balcony_glass"
-              value="true"
-              selected={balcony === true}
-            >
-              Var — sabit paket eklenir
+            <Choice slug={slug} field="balcony_glass" value="true" selected={balcony === true}>
+              Dahil Et
             </Choice>
             <Choice
               slug={slug}
@@ -350,19 +347,16 @@ export function ConfigureSection({ slug, draft, quote }: Props) {
               value="false"
               selected={c.balcony_glass === false}
             >
-              Yok
+              Dahil Etme
             </Choice>
           </div>
+          <p className="text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+            Balkon cam sistemleri sabit paket olarak eklenir.
+          </p>
         </section>
 
-        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 pt-6 dark:border-zinc-800">
-          <div className="text-sm text-zinc-600 dark:text-zinc-300">
-            Canlı tutar
-            <div className="mt-1">
-              <PriceDisplay amount={quote.total} currency={quote.currency} />
-            </div>
-          </div>
-        </footer>
+        {showReadyNote ? <ReadyNote /> : null}
+        <ConfigurePriceFooter quote={quote} variant="dynamic" />
       </div>
     );
   }

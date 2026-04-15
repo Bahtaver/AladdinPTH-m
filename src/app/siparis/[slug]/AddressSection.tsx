@@ -6,6 +6,8 @@ import { addOrderDraftToCart } from "@/app/actions/cartActions";
 import { saveFulfillment } from "@/app/actions/orderFlow";
 import type { OrderDraft } from "@/lib/order/draftSchema";
 import type { CustomerAddressRow } from "@/types/database";
+import { CartBag24 } from "@/components/icons/CartBag24";
+import { ChevronRight24 } from "@/components/icons/ChevronRight24";
 import { DraftFavoriteButton } from "./DraftFavoriteButton";
 
 type Props = {
@@ -168,16 +170,18 @@ export function AddressSection({
             type="submit"
             form="siparis-address-form"
             formAction={addOrderDraftToCart}
-            className="w-full rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm font-semibold text-emerald-800 shadow-sm hover:border-emerald-300 hover:bg-emerald-50/80 dark:border-emerald-800 dark:bg-zinc-950 dark:text-emerald-200 dark:hover:border-emerald-700 dark:hover:bg-emerald-950/30"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm font-semibold text-emerald-800 shadow-sm hover:border-emerald-300 hover:bg-emerald-50/80 dark:border-emerald-800 dark:bg-zinc-950 dark:text-emerald-200 dark:hover:border-emerald-700 dark:hover:bg-emerald-950/30"
           >
-            Sepete ekle (yapılandırmayı sıfırlar, bu sayfada kalırsınız)
+            <CartBag24 className="size-5 shrink-0" />
+            Sepete ekle
           </button>
           <button
             type="submit"
             form="siparis-address-form"
-            className="w-full rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500"
           >
             Özeti gör
+            <ChevronRight24 className="size-5 shrink-0 opacity-90" />
           </button>
         </div>
       </div>

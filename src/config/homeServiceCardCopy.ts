@@ -17,19 +17,19 @@ export const HOME_SERVICE_CARD_COPY: Record<string, HomeServiceCardCopy> = {
   "sofa-cleaning": {
     title: "Koltuk Temizlik & Bakım Hizmeti",
     description:
-      "Kumaş tipinize uygun paketi rehberde seçin; fiyatı anında görün, ek hizmetleri dilediğiniz gibi ekleyin. Ekibimiz adresinizde profesyonel ekipmanla uygular — süreç şeffaf, kontrol sizde, hijyen uzun soluklu.",
+      "Koltuk tipinize göre sabit paketlerle kolayca seçim yapın. Yerinde profesyonel uygulama ile derinlemesine temizlik sağlanır, fiyat baştan nettir.",
     ctaLabel: "Hizmeti Planla",
   },
   "carpet-cleaning": {
     title: "Halı Temizlik & Bakım Hizmeti",
     description:
-      "Halı tipinizi ve ihtiyacınızı adım adım belirtin; leke yoğunluğuna uygun yöntem ve paket netleşir, tutar önceden hesaplanır. Yerinde veya uygun koşullarda uygulama ile etkili temizlik ve güven veren iletişim.",
+      "Halılarınızı metrekare ve elyaf tipine göre kolayca planlayın. Profesyonel ekipman ve uygun yöntemlerle etkili temizlik sağlanır, fiyat anında hesaplanır.",
     ctaLabel: "Hizmeti Planla",
   },
   "window-cleaning": {
     title: "Cam Temizlik & Bakım Hizmeti",
     description:
-      "İç ve dış yüzeyleri rehberde işaretleyin; erişim zorluğu dahil güvenli plan yapılır, ürünler profesyonel standartta kullanılır. Fiyat şeffaf, ekip ziyaret öncesi bilgilendirir, sonuç detaylı şekilde tamamlanır.",
+      "Pencere ve balkon camlarınızı ayrı ayrı seçin, ihtiyacınıza göre planlayın. Profesyonel ekipmanlarla iz bırakmayan temizlik uygulanır, fiyat anında hesaplanır.",
     ctaLabel: "Hizmeti Planla",
   },
 };

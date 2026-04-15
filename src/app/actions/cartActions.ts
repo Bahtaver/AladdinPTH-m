@@ -263,7 +263,7 @@ export async function addOrderDraftToCart(formData: FormData) {
 
   revalidatePath(`/siparis/${serviceSlug}`);
   revalidatePath("/sepet");
-  redirect(`/siparis/${serviceSlug}`);
+  redirect(`/siparis/${serviceSlug}?kaydedildi=1`);
 }
 
 function parseTimeWindow(

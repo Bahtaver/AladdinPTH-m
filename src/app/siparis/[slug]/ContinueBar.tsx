@@ -1,19 +1,27 @@
 import { goToStep } from "@/app/actions/orderFlow";
+import { ChevronRight24 } from "@/components/icons/ChevronRight24";
+
+export type ContinueSelectionStatus = "empty" | "incomplete" | "complete";
 
 type Props = {
   slug: string;
   label: string;
   nextStep: "address" | "review";
   disabled?: boolean;
-  /** Düğmenin altında gösterilen kısa yönlendirme. */
-  hint?: string;
+  selectionStatus: ContinueSelectionStatus;
 };
 
-export function ContinueBar({ slug, label, nextStep, disabled, hint }: Props) {
+function selectionStatusText(selectionStatus: ContinueSelectionStatus): string {
+  if (selectionStatus === "empty") return "Seçim yaparak başlayın";
+  if (selectionStatus === "incomplete") return "Devam etmek için seçimleri tamamlayın";
+  return "Tamamlamanıza 1 adım kaldı";
+}
+
+export function ContinueBar({ slug, label, nextStep, disabled, selectionStatus }: Props) {
   if (disabled) {
     return (
       <p className="pt-4 text-sm text-amber-800 dark:text-amber-200">
-        Tüm seçimleri tamamladıktan sonra ilerleyebilirsiniz.
+        {selectionStatusText(selectionStatus)}
       </p>
     );
   }
@@ -24,16 +32,12 @@ export function ContinueBar({ slug, label, nextStep, disabled, hint }: Props) {
         <input type="hidden" name="step" value={nextStep} />
         <button
           type="submit"
-          className="w-full rounded-2xl bg-zinc-900 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-zinc-900 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
         >
           {label}
+          <ChevronRight24 className="size-5 shrink-0 opacity-90" />
         </button>
       </form>
-      {hint ? (
-        <p className="text-center text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
-          {hint}
-        </p>
-      ) : null}
     </div>
   );
 }

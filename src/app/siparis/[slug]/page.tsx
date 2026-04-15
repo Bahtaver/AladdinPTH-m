@@ -5,6 +5,7 @@ import { beginOrder } from "@/app/actions/orderFlow";
 import { ServiceGuaranteePanel } from "@/components/commerce/ServiceGuaranteePanel";
 import { StepRail } from "@/components/commerce/StepRail";
 import { TrustPanel } from "@/components/commerce/TrustPanel";
+import { CartBag24 } from "@/components/icons/CartBag24";
 import {
   getDefaultServiceConfiguration,
   getServiceBySlug,
@@ -22,27 +23,40 @@ import {
   CAR_WASH_ORDER_INTRO,
   CAR_WASH_TRUST,
   CAR_WASH_ZAMANLAMA,
-  CAR_WASH_CONTINUE_HINT,
 } from "@/config/carWashFlowCopy";
+import {
+  ORDER_PAGE_META,
+} from "@/config/homeServiceOrderCopy";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { CustomerAddressRow } from "@/types/database";
 import { AddressSection } from "./AddressSection";
 import { ConfigureSection } from "./ConfigureSection";
+import type { ContinueSelectionStatus } from "./ContinueBar";
 import { ContinueBar } from "./ContinueBar";
 import { DraftFavoriteButton } from "./DraftFavoriteButton";
 import { ReviewSection } from "./ReviewSection";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ hata?: string }>;
+  searchParams: Promise<{ hata?: string; kaydedildi?: string }>;
 };
+
+function hasAnyConfigurationSelection(configuration: Record<string, unknown>): boolean {
+  return Object.values(configuration).some((value) => {
+    if (value === null || value === undefined) return false;
+    if (typeof value === "string") return value.trim().length > 0;
+    if (typeof value === "number") return Number.isFinite(value);
+    if (Array.isArray(value)) return value.length > 0;
+    return true;
+  });
+}
 
 export default async function SiparisPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
   if (slug === "touch-up-paint") {
     redirect("/");
   }
-  const { hata: hataRaw } = await searchParams;
+  const { hata: hataRaw, kaydedildi: kaydedildiRaw } = await searchParams;
   const hata =
     typeof hataRaw === "string"
       ? (() => {
@@ -53,6 +67,8 @@ export default async function SiparisPage({ params, searchParams }: PageProps) {
           }
         })()
       : undefined;
+  const secimlerKaydedildiBildirimi =
+    !hata && kaydedildiRaw === "1";
 
   const supabase = await createSupabaseServerClient();
   const service = await getServiceBySlug(supabase, slug);
@@ -97,9 +113,15 @@ export default async function SiparisPage({ params, searchParams }: PageProps) {
       : null;
   const trust = slug === "car-wash" ? { title: CAR_WASH_TRUST.title, body: CAR_WASH_TRUST.body } : trustFromConfig;
 
-  const serviceDisplayName = slug === "car-wash" ? CAR_WASH_DISPLAY_NAME : service.name;
+  const orderMeta = ORDER_PAGE_META[slug];
+  const serviceDisplayName =
+    slug === "car-wash"
+      ? CAR_WASH_DISPLAY_NAME
+      : (orderMeta?.displayName ?? service.name);
   const serviceIntro =
-    slug === "car-wash" ? CAR_WASH_ORDER_INTRO : (service.long_description ?? null);
+    slug === "car-wash"
+      ? CAR_WASH_ORDER_INTRO
+      : (orderMeta?.intro ?? (service.long_description ?? null));
 
   let savedAddresses: CustomerAddressRow[] = [];
   if (draft?.serviceSlug === slug && draft.step === "address") {
@@ -144,6 +166,13 @@ export default async function SiparisPage({ params, searchParams }: PageProps) {
     );
   }
 
+  const hasAnySelection = hasAnyConfigurationSelection(draft.configuration);
+  const continueSelectionStatus: ContinueSelectionStatus = canAddConfiguredServiceToCart
+    ? "complete"
+    : hasAnySelection
+      ? "incomplete"
+      : "empty";
+
   return (
     <main className="mx-auto max-w-3xl px-4 py-8 sm:py-12">
       <header className="space-y-4">
@@ -175,11 +204,24 @@ export default async function SiparisPage({ params, searchParams }: PageProps) {
           {hata}
         </div>
       ) : null}
+      {secimlerKaydedildiBildirimi ? (
+        <div
+          role="status"
+          className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-950 dark:border-emerald-800/80 dark:bg-emerald-950/35 dark:text-emerald-50"
+        >
+          Seçimleriniz kaydedildi.
+        </div>
+      ) : null}
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
         <section className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
           {draft.step === "configure" ? (
-            <ConfigureSection slug={slug} draft={draft} quote={quote} />
+            <ConfigureSection
+              slug={slug}
+              draft={draft}
+              quote={quote}
+              showReadyNote={continueSelectionStatus === "complete"}
+            />
           ) : null}
           {draft.step === "address" ? (
             <AddressSection
@@ -218,17 +260,15 @@ export default async function SiparisPage({ params, searchParams }: PageProps) {
                     <input type="hidden" name="slug" value={slug} />
                     <input type="hidden" name="draft_source" value="configure" />
                     <p className="mb-2 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
-                      <strong>Aynı adrese</strong> birden fazla hizmet eklemek için seçimlerinizi sepete
-                      atın; ardından ana sayfadan başka bir hizmete geçebilirsiniz. Teslimat adresini
-                      sepette tek seferde girersiniz. <strong>Farklı adres</strong> isteyenler her
-                      hizmeti ayrı ayrı bu akışta tamamlayabilir veya sepette sipariş kalemlerini
-                      işaretleyerek ayrı checkout yapabilir.
+                      Aynı adrese birden fazla hizmet eklemek için seçimlerinizi sepete ekleyin.
+                      Adresinizi ödeme adımında tek seferde girersiniz.
                     </p>
                     <button
                       type="submit"
-                      className="w-full rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm font-semibold text-emerald-800 shadow-sm hover:border-emerald-300 hover:bg-emerald-50/80 dark:border-emerald-800 dark:bg-zinc-950 dark:text-emerald-200 dark:hover:border-emerald-700 dark:hover:bg-emerald-950/30"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm font-semibold text-emerald-800 shadow-sm hover:border-emerald-300 hover:bg-emerald-50/80 dark:border-emerald-800 dark:bg-zinc-950 dark:text-emerald-200 dark:hover:border-emerald-700 dark:hover:bg-emerald-950/30"
                     >
-                      Sepete ekle (seçimleri sıfırlar, yapılandırmada kalırsınız)
+                      <CartBag24 className="size-5 shrink-0" />
+                      Sepete ekle
                     </button>
                   </form>
                 </div>
@@ -238,7 +278,7 @@ export default async function SiparisPage({ params, searchParams }: PageProps) {
                 nextStep="address"
                 disabled={Boolean(cfgErr)}
                 label="Devam Et"
-                hint={slug === "car-wash" ? CAR_WASH_CONTINUE_HINT : undefined}
+                selectionStatus={continueSelectionStatus}
               />
             </div>
           ) : null}

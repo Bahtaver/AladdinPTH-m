@@ -5,6 +5,7 @@ import { CHECKOUT_VERIFICATION_ENABLED } from "@/lib/auth/checkoutVerification";
 import type { OrderDraft } from "@/lib/order/draftSchema";
 import { PriceDisplay } from "@/components/commerce/PriceDisplay";
 import type { PriceQuote } from "@/lib/pricing/engine";
+import { CartBag24 } from "@/components/icons/CartBag24";
 import { DraftFavoriteButton } from "./DraftFavoriteButton";
 
 type Props = {
@@ -102,9 +103,10 @@ export function ReviewSection({
               <input type="hidden" name="draft_source" value="review" />
               <button
                 type="submit"
-                className="w-full rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm font-semibold text-emerald-800 shadow-sm hover:border-emerald-300 hover:bg-emerald-50/80 dark:border-emerald-800 dark:bg-zinc-950 dark:text-emerald-200 dark:hover:border-emerald-700 dark:hover:bg-emerald-950/30"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm font-semibold text-emerald-800 shadow-sm hover:border-emerald-300 hover:bg-emerald-50/80 dark:border-emerald-800 dark:bg-zinc-950 dark:text-emerald-200 dark:hover:border-emerald-700 dark:hover:bg-emerald-950/30"
               >
-                Sepete ekle (yapılandırmayı sıfırlar, yapılandırma adımına dönersiniz)
+                <CartBag24 className="size-5 shrink-0" />
+                Sepete ekle
               </button>
             </form>
           </div>

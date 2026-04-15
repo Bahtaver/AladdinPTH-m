@@ -8,10 +8,11 @@ export const CAR_WASH_DISPLAY_NAME = "Araç Yıkama & Detaylı Bakım";
 export const CAR_WASH_ORDER_INTRO =
   "Hizmetinizi adım adım seçin, ek işlemleri ekleyin ve adresinizde profesyonel uygulama ile tamamlayın. Süreç baştan sona şeffaf ve kontrol sizde.";
 
-export const CAR_WASH_CONFIGURE_HEADING = "Hizmetini Oluştur";
-
-export const CAR_WASH_CONFIGURE_SUB =
-  "Paketini seç, aracını belirt, istersen ek hizmet ekle. Fiyat anında hesaplanır.";
+export const CAR_WASH_CONFIGURE_HEADER = {
+  title: "Sana uygun olanı seç",
+  description:
+    "Paketini seç, aracını belirt. Yerinde profesyonel uygulama ile bakımını tamamla, fiyatını anında gör.",
+} as const;
 
 export const CAR_WASH_TRUST = {
   title: "Kapınıza Kadar Güvenli Hizmet",
@@ -25,5 +26,3 @@ export const CAR_WASH_ZAMANLAMA = {
     "Hizmetiniz seçtiğiniz gün içerisinde planlanır. Ekip, ziyaret öncesinde sizinle iletişime geçer.",
 } as const;
 
-export const CAR_WASH_CONTINUE_HINT =
-  "Tüm seçimleri tamamladıktan sonra ilerleyebilirsiniz.";

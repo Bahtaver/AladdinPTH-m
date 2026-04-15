@@ -49,7 +49,7 @@ export const carpetFiberMedia = [
   {
     value: "natural" as const,
     storagePath: "dogal-lifli-hali.png",
-    label: "Doğal elyaf",
+    label: "Doğal Elyaf",
   },
 ];
 
@@ -58,17 +58,17 @@ export const sofaTypeMedia = [
   {
     value: "single" as const,
     storagePath: "1-li-koltuk.png",
-    label: "Tekli",
+    label: "Tekli Koltuk",
   },
   {
     value: "double" as const,
     storagePath: "2-li-koltuk.png",
-    label: "İkili",
+    label: "İkili Koltuk",
   },
   {
     value: "full_set" as const,
     storagePath: "koltuk-takim.png",
-    label: "Tam takım",
+    label: "Tam Takım",
   },
   {
     value: "chair" as const,

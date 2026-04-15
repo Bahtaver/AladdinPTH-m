@@ -118,8 +118,12 @@ export async function goToStep(formData: FormData) {
     }
   }
 
+  const previousStep = draft.step;
   await setOrderDraft({ ...draft, step });
   revalidatePath(`/siparis/${slug}`);
+  if (step === "address" && previousStep === "configure") {
+    redirect(`/siparis/${slug}?kaydedildi=1`);
+  }
   redirect(`/siparis/${slug}`);
 }
 

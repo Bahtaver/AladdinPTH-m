@@ -81,7 +81,7 @@ export default async function FavorilerPage() {
                       fill
                       className="object-contain object-center"
                       sizes="56px"
-                      unoptimized
+                      quality={65}
                     />
                   ) : (
                     <span className="flex h-full items-center justify-center text-[10px] text-zinc-500">

@@ -42,7 +42,7 @@ export function VisualChoiceCard({
               fill
               sizes="(max-width:640px) 30vw, 140px"
               className="object-cover"
-              unoptimized
+              quality={70}
             />
           ) : (
             <span className="flex h-full min-h-[4.5rem] items-center justify-center text-[10px] text-zinc-400">

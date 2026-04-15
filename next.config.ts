@@ -12,6 +12,8 @@ const hostname = (() => {
 const nextConfig: NextConfig = {
   images: hostname
     ? {
+        formats: ["image/avif", "image/webp"],
+        minimumCacheTTL: 60 * 60 * 24 * 7,
         remotePatterns: [
           {
             protocol: "https",
@@ -21,6 +23,18 @@ const nextConfig: NextConfig = {
         ],
       }
     : {},
+  async headers() {
+    return [
+      {
+        source: "/manifest.webmanifest",
+        headers: [{ key: "Cache-Control", value: "public, max-age=3600, must-revalidate" }],
+      },
+      {
+        source: "/favicon.svg",
+        headers: [{ key: "Cache-Control", value: "public, max-age=604800, immutable" }],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -7,9 +7,10 @@ import { beginOrder } from "@/app/actions/orderFlow";
 
 type Props = {
   service: ServiceRow;
+  imagePriority?: boolean;
 };
 
-export function ServiceCard({ service }: Props) {
+export function ServiceCard({ service, imagePriority = false }: Props) {
   const slug = service.slug ?? "";
   const cardCopy = getHomeServiceCardCopy(slug);
   const title = cardCopy?.title ?? service.name;
@@ -28,8 +29,9 @@ export function ServiceCard({ service }: Props) {
             fill
             className="object-contain object-center"
             sizes="(max-width:768px) 100vw, 33vw"
-            priority={false}
-            unoptimized
+            priority={imagePriority}
+            fetchPriority={imagePriority ? "high" : "auto"}
+            quality={75}
           />
         ) : (
           <div className="flex h-full items-center justify-center text-sm text-zinc-500">

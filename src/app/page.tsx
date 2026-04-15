@@ -51,8 +51,8 @@ export default async function HomePage() {
         </section>
 
         <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((s) => (
-            <ServiceCard key={s.id} service={s} />
+          {services.map((s, idx) => (
+            <ServiceCard key={s.id} service={s} imagePriority={idx === 0} />
           ))}
         </section>
       </main>

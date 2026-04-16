@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { submitCartCheckout } from "@/app/actions/cartActions";
+import { SmartAddressField } from "@/components/address/SmartAddressField";
 import { OrderVerificationGate } from "@/components/auth/OrderVerificationGate";
 import { PriceDisplay } from "@/components/commerce/PriceDisplay";
 import { CHECKOUT_VERIFICATION_ENABLED } from "@/lib/auth/checkoutVerification";
@@ -36,18 +37,6 @@ export function CartCheckoutForm({
   const [addressLine, setAddressLine] = useState("");
   const [timeWindow, setTimeWindow] = useState("");
   const [customerNote, setCustomerNote] = useState("");
-  const [pickerKey, setPickerKey] = useState(0);
-
-  const addressOptions = useMemo(
-    () =>
-      savedAddresses.map((a) => ({
-        id: a.id,
-        title: a.label?.trim() ? a.label.trim() : "Adres",
-        line: a.address_line,
-      })),
-    [savedAddresses],
-  );
-
   const grand = useMemo(() => {
     const currency = lines[0]?.quote.currency ?? "TRY";
     const total = lines.reduce((s, l) => s + l.quote.total, 0);
@@ -118,50 +107,13 @@ export function CartCheckoutForm({
             action={submitCartCheckout}
             className="space-y-4"
           >
-            {addressOptions.length > 0 ? (
-              <div className="space-y-1 rounded-2xl border border-emerald-100 bg-emerald-50/50 p-4 dark:border-emerald-900/40 dark:bg-emerald-950/20">
-                <label className="block text-sm font-medium text-emerald-950 dark:text-emerald-100">
-                  Kayıtlı adreslerden seç
-                </label>
-                <select
-                  key={pickerKey}
-                  defaultValue=""
-                  className="mt-1 w-full rounded-2xl border border-emerald-200/80 bg-white px-3 py-2 text-sm text-zinc-900 outline-none ring-emerald-500/30 focus:ring-4 dark:border-emerald-800 dark:bg-zinc-950 dark:text-zinc-50"
-                  onChange={(e) => {
-                    const id = e.target.value;
-                    if (!id) return;
-                    const row = addressOptions.find((o) => o.id === id);
-                    if (row) {
-                      const prefix = row.title !== "Adres" ? `[${row.title}]\n` : "";
-                      setAddressLine(prefix + row.line);
-                    }
-                    setPickerKey((k) => k + 1);
-                  }}
-                >
-                  <option value="">— Bir adres seçin —</option>
-                  {addressOptions.map((o) => (
-                    <option key={o.id} value={o.id}>
-                      {o.title}
-                    </option>
-                  ))}
-                </select>
-                <p className="text-xs text-emerald-900/80 dark:text-emerald-200/80">
-                  Yeni adres için{" "}
-                  <Link href="/profil" className="font-medium underline-offset-2 hover:underline">
-                    Profilim
-                  </Link>
-                  .
-                </p>
-              </div>
-            ) : (
-              <p className="rounded-2xl border border-dashed border-zinc-200 bg-zinc-50 px-3 py-2 text-xs text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900/40 dark:text-zinc-300">
-                Kayıtlı adres yok. Sık kullandığınız adresleri{" "}
-                <Link href="/profil" className="font-medium text-emerald-700 underline-offset-2 hover:underline dark:text-emerald-300">
-                  Profilim
-                </Link>{" "}
-                üzerinden ekleyebilirsiniz.
-              </p>
-            )}
+            <p className="rounded-2xl border border-dashed border-zinc-200 bg-zinc-50 px-3 py-2 text-xs text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900/40 dark:text-zinc-300">
+              Kayıtlı adreslerinizi hızlı seçmek veya yeni adres eklemek için{" "}
+              <Link href="/profil" className="font-medium text-emerald-700 underline-offset-2 hover:underline dark:text-emerald-300">
+                Profilim
+              </Link>{" "}
+              sayfasını kullanabilirsiniz.
+            </p>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="space-y-1 text-sm text-zinc-700 dark:text-zinc-200">
@@ -185,17 +137,7 @@ export function CartCheckoutForm({
                 />
               </label>
             </div>
-            <label className="block space-y-1 text-sm text-zinc-700 dark:text-zinc-200">
-              Hizmet adresi
-              <textarea
-                name="address_line"
-                value={addressLine}
-                onChange={(e) => setAddressLine(e.target.value)}
-                required
-                rows={4}
-                className="w-full rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-base text-zinc-900 outline-none ring-emerald-500/40 focus:ring-4 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
-              />
-            </label>
+            <SmartAddressField value={addressLine} onChange={setAddressLine} savedAddresses={savedAddresses} />
             <label className="block space-y-1 text-sm text-zinc-700 dark:text-zinc-200">
               Zaman tercihi (isteğe bağlı)
               <select

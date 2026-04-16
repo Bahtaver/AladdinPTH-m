@@ -8,6 +8,7 @@ import {
   deleteProfileSavedAddress,
   saveProfileBasics,
 } from "@/app/actions/profileActions";
+import { SmartAddressFieldInput } from "@/components/address/SmartAddressFieldInput";
 import {
   AccordionIconAccount,
   AccordionIconHome,
@@ -37,7 +38,35 @@ export default async function ProfilPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/");
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
+        <header className="border-b border-zinc-200 bg-white/80 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
+          <div className="mx-auto flex max-w-lg items-center justify-between gap-3 px-4 py-3">
+            <Link
+              href="/"
+              className="text-xs font-medium text-emerald-700 underline-offset-4 hover:underline dark:text-emerald-300"
+            >
+              ← Ana sayfa
+            </Link>
+            <h1 className="text-sm font-semibold tracking-tight">Profilim</h1>
+            <span className="w-12" aria-hidden />
+          </div>
+        </header>
+        <main className="mx-auto max-w-lg space-y-4 px-4 py-8">
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-100">
+            Oturum hazırlanıyor. Bu ekran birkaç saniye içinde hazır olur.
+          </div>
+          <Link
+            href="/profil"
+            className="inline-flex w-full justify-center rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-500"
+          >
+            Yeniden dene
+          </Link>
+        </main>
+      </div>
+    );
+  }
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -219,14 +248,7 @@ export default async function ProfilPage() {
               placeholder="Etiket (örn. Ev, İş) — isteğe bağlı"
               className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-950"
             />
-            <textarea
-              name="address_line"
-              required
-              rows={4}
-              minLength={5}
-              placeholder="Mahalle, sokak, bina, daire, yön tarifi…"
-              className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-            />
+            <SmartAddressFieldInput savedAddresses={addresses} label="Adres detayı" />
             <button
               type="submit"
               className="w-full rounded-xl border border-emerald-600 bg-emerald-50 py-2 text-sm font-semibold text-emerald-900 hover:bg-emerald-100 dark:border-emerald-500 dark:bg-emerald-950/40 dark:text-emerald-100 dark:hover:bg-emerald-950/60"

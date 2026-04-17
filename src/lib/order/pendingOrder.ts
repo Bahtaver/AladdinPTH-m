@@ -1,8 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ServiceRow } from "@/types/database";
+import { listActiveCampaignsForService } from "@/lib/data/campaignsRepository";
 import { listPricingRulesForService } from "@/lib/data/pricingRulesRepository";
 import { configurationError } from "@/lib/order/configurationValidation";
 import type { Fulfillment } from "@/lib/order/draftSchema";
+import { applyCampaigns } from "@/lib/pricing/campaignEngine";
 import { quoteForRules, type OrderConfiguration } from "@/lib/pricing/engine";
 
 export type CreatePendingOrderInput = {
@@ -10,6 +12,10 @@ export type CreatePendingOrderInput = {
   service: ServiceRow;
   configuration: OrderConfiguration;
   fulfillment: Fulfillment;
+  viewer: {
+    isAnonymous: boolean;
+    isVerified: boolean;
+  };
 };
 
 /**
@@ -19,7 +25,7 @@ export async function createPendingOrder(
   supabase: SupabaseClient,
   input: CreatePendingOrderInput,
 ): Promise<{ ok: true; orderId: string } | { ok: false; error: string }> {
-  const { customerId, service, configuration, fulfillment } = input;
+  const { customerId, service, configuration, fulfillment, viewer } = input;
   const slug = service.slug;
   if (!slug) {
     return { ok: false, error: "Hizmet slug bilgisi yok." };
@@ -29,7 +35,9 @@ export async function createPendingOrder(
   if (cfgErr) return { ok: false, error: cfgErr };
 
   const rules = await listPricingRulesForService(supabase, service.id);
-  const quote = quoteForRules(rules, configuration);
+  const baseQuote = quoteForRules(rules, configuration);
+  const campaigns = await listActiveCampaignsForService(supabase, service.id);
+  const quote = applyCampaigns({ baseQuote, campaigns, viewer });
   if (quote.total <= 0) {
     return {
       ok: false,

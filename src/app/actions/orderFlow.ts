@@ -201,6 +201,10 @@ export async function submitOrder(formData: FormData) {
     service,
     configuration: draft.configuration,
     fulfillment: draft.fulfillment,
+    viewer: {
+      isAnonymous: user.is_anonymous === true,
+      isVerified: user.is_anonymous !== true && Boolean(user.email_confirmed_at),
+    },
   });
 
   if (!created.ok) {

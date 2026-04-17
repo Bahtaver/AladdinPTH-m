@@ -24,6 +24,23 @@ export type PricingRuleRow = {
   stackable: boolean;
 };
 
+export type CampaignRow = {
+  id: string;
+  name: string;
+  description: string | null;
+  discount_type: "percent" | "fixed";
+  discount_value: string | number;
+  max_discount: string | number | null;
+  min_order_total: string | number;
+  stackable: boolean;
+  priority: number;
+  starts_at: string | null;
+  ends_at: string | null;
+  is_active: boolean;
+  status: "draft" | "scheduled" | "active" | "paused" | "archived";
+  audience_type: "all" | "anonymous_unverified" | "verified_only";
+};
+
 export type ServiceConfigurationRow = {
   id: string;
   service_id: string;

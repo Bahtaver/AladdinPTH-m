@@ -3,7 +3,7 @@ import type { PricingRuleRow } from "@/types/database";
 export type OrderConfiguration = Record<string, unknown>;
 
 export type PricedLine = {
-  pricing_rule_id: string;
+  pricing_rule_id?: string | null;
   label: string;
   title: string;
   line_total: number;
@@ -15,6 +15,7 @@ export type PriceQuote = {
   currency: string;
   lines: PricedLine[];
   total: number;
+  originalTotal?: number;
 };
 
 function num(v: string | number | null | undefined): number {

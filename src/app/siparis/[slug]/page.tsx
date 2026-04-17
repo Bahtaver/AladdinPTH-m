@@ -10,6 +10,7 @@ import {
   getDefaultServiceConfiguration,
   getServiceBySlug,
 } from "@/lib/data/servicesRepository";
+import { listActiveCampaignsForService } from "@/lib/data/campaignsRepository";
 import { listPricingRulesForService } from "@/lib/data/pricingRulesRepository";
 import { getOrderDraft } from "@/lib/order/draftCookie";
 import { configurationError } from "@/lib/order/configurationValidation";
@@ -17,6 +18,7 @@ import {
   CHECKOUT_VERIFICATION_ENABLED,
   needsCheckoutVerification,
 } from "@/lib/auth/checkoutVerification";
+import { applyCampaigns } from "@/lib/pricing/campaignEngine";
 import { quoteForRules } from "@/lib/pricing/engine";
 import {
   CAR_WASH_DISPLAY_NAME,
@@ -74,21 +76,31 @@ export default async function SiparisPage({ params, searchParams }: PageProps) {
   const service = await getServiceBySlug(supabase, slug);
   if (!service?.slug) notFound();
 
-  const [draft, rules, svcConfig] = await Promise.all([
+  const [draft, rules, svcConfig, campaigns] = await Promise.all([
     getOrderDraft(),
     listPricingRulesForService(supabase, service.id),
     getDefaultServiceConfiguration(supabase, service.id),
+    listActiveCampaignsForService(supabase, service.id),
   ]);
+  const {
+    data: { user: accountUser },
+  } = await supabase.auth.getUser();
 
-  const quote = quoteForRules(rules, draft?.configuration ?? {});
+  const baseQuote = quoteForRules(rules, draft?.configuration ?? {});
+  const quote = applyCampaigns({
+    baseQuote,
+    campaigns,
+    viewer: {
+      isAnonymous: accountUser?.is_anonymous === true,
+      isVerified:
+        accountUser?.is_anonymous !== true &&
+        Boolean(accountUser?.email_confirmed_at),
+    },
+  });
   const cfgErr = draft
     ? configurationError(service.slug as string, draft.configuration)
     : "Taslak bulunamadı";
   const canAddConfiguredServiceToCart = !cfgErr && quote.total > 0;
-
-  const {
-    data: { user: accountUser },
-  } = await supabase.auth.getUser();
 
   let draftServiceFavorited = false;
   if (accountUser) {

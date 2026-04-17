@@ -15,6 +15,7 @@ export type CartLineDisplay = {
   slug: string;
   imgUrl: string | null;
   total: number;
+  originalTotal?: number | null;
   currency: string;
 };
 
@@ -147,7 +148,11 @@ export function CartLineItems({ lines, favoritedServiceIds, checkoutFormId, sele
               </div>
             )}
             <div className="flex shrink-0 items-center gap-1.5 self-start pt-0.5 sm:gap-2">
-              <PriceDisplay amount={line.total} currency={line.currency} />
+              <PriceDisplay
+                amount={line.total}
+                originalAmount={line.originalTotal ?? null}
+                currency={line.currency}
+              />
               <form action={toggleFavoriteFromCartItemForm} className="shrink-0">
                 <input type="hidden" name="cart_item_id" value={line.id} />
                 <button

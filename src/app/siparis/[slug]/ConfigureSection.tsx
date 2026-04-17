@@ -71,7 +71,11 @@ function ConfigurePriceFooter({
       <div>
         <p className="text-sm font-medium text-zinc-800 dark:text-zinc-100">Anlık Toplam</p>
         <div className="mt-1">
-          <PriceDisplay amount={quote.total} currency={quote.currency} />
+          <PriceDisplay
+            amount={quote.total}
+            originalAmount={quote.originalTotal ?? null}
+            currency={quote.currency}
+          />
         </div>
         <p className="mt-2 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">{sub}</p>
       </div>

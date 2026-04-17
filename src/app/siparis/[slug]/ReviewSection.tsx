@@ -36,7 +36,7 @@ export function ReviewSection({
         </p>
         <ul className="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-200">
           {quote.lines.map((l) => (
-            <li key={l.pricing_rule_id} className="flex justify-between gap-3">
+            <li key={`${l.pricing_rule_id ?? "campaign"}:${l.label}`} className="flex justify-between gap-3">
               <span>{l.title}</span>
               <span className="shrink-0 font-medium">
                 <PriceDisplay amount={l.line_total} currency={quote.currency} />
@@ -46,7 +46,11 @@ export function ReviewSection({
         </ul>
         <div className="mt-4 flex items-center justify-between border-t border-zinc-200 pt-4 text-base font-semibold dark:border-zinc-800">
           <span>Toplam</span>
-          <PriceDisplay amount={quote.total} currency={quote.currency} />
+          <PriceDisplay
+            amount={quote.total}
+            originalAmount={quote.originalTotal ?? null}
+            currency={quote.currency}
+          />
         </div>
       </div>
 

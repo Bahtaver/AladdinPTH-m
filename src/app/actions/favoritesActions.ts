@@ -3,10 +3,12 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { loadCartWithItems } from "@/lib/data/cartRepository";
+import { listActiveCampaignsForService } from "@/lib/data/campaignsRepository";
 import { getServiceBySlug } from "@/lib/data/servicesRepository";
 import { listPricingRulesForService } from "@/lib/data/pricingRulesRepository";
 import { getOrderDraft } from "@/lib/order/draftCookie";
 import { configurationError } from "@/lib/order/configurationValidation";
+import { applyCampaigns } from "@/lib/pricing/campaignEngine";
 import { quoteForRules, type OrderConfiguration } from "@/lib/pricing/engine";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -52,7 +54,16 @@ export async function toggleFavoriteFromOrderDraftForm(formData: FormData) {
   }
 
   const rules = await listPricingRulesForService(supabase, svc.id);
-  const quote = quoteForRules(rules, cfg);
+  const baseQuote = quoteForRules(rules, cfg);
+  const campaigns = await listActiveCampaignsForService(supabase, svc.id);
+  const quote = applyCampaigns({
+    baseQuote,
+    campaigns,
+    viewer: {
+      isAnonymous: authUser!.is_anonymous === true,
+      isVerified: authUser!.is_anonymous !== true && Boolean(authUser!.email_confirmed_at),
+    },
+  });
   if (quote.total <= 0) {
     redirectSiparisHata(slug, "Geçerli bir tutar hesaplanamadı; seçimleri kontrol edin.");
   }

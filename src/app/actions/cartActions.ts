@@ -8,12 +8,14 @@ import {
   loadCartWithItems,
   type CartItemWithService,
 } from "@/lib/data/cartRepository";
+import { listActiveCampaignsForService } from "@/lib/data/campaignsRepository";
 import { listPricingRulesForService } from "@/lib/data/pricingRulesRepository";
 import { getServiceById, getServiceBySlug } from "@/lib/data/servicesRepository";
 import { configurationError } from "@/lib/order/configurationValidation";
 import { getOrderDraft, setOrderDraft } from "@/lib/order/draftCookie";
 import type { Fulfillment, OrderDraft } from "@/lib/order/draftSchema";
 import { fulfillmentError } from "@/lib/order/fulfillmentValidation";
+import { applyCampaigns } from "@/lib/pricing/campaignEngine";
 import { quoteForRules, type OrderConfiguration, type PricedLine } from "@/lib/pricing/engine";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { CartRow } from "@/types/database";
@@ -25,7 +27,7 @@ function mapLinesToRpc(lines: PricedLine[]) {
     quantity: l.quantity ?? null,
     unit_price: l.unit_price ?? null,
     line_total: l.line_total,
-    pricing_rule_id: l.pricing_rule_id,
+    pricing_rule_id: l.pricing_rule_id ?? null,
     price: l.line_total,
   }));
 }
@@ -80,7 +82,16 @@ export async function addCartItem(input: {
   if (cfgErr) return { ok: false, error: cfgErr };
 
   const rules = await listPricingRulesForService(supabase, service.id);
-  const quote = quoteForRules(rules, input.configuration);
+  const baseQuote = quoteForRules(rules, input.configuration);
+  const campaigns = await listActiveCampaignsForService(supabase, service.id);
+  const quote = applyCampaigns({
+    baseQuote,
+    campaigns,
+    viewer: {
+      isAnonymous: user.is_anonymous === true,
+      isVerified: user.is_anonymous !== true && Boolean(user.email_confirmed_at),
+    },
+  });
   if (quote.total <= 0) {
     return {
       ok: false,
@@ -125,6 +136,10 @@ export async function updateCartItem(input: {
   configuration: OrderConfiguration;
 }): Promise<{ ok: true } | { ok: false; error: string }> {
   const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Oturum bulunamadı." };
 
   const { data: item, error: selErr } = await supabase
     .from("cart_items")
@@ -146,7 +161,16 @@ export async function updateCartItem(input: {
   if (cfgErr) return { ok: false, error: cfgErr };
 
   const rules = await listPricingRulesForService(supabase, service.id);
-  const quote = quoteForRules(rules, input.configuration);
+  const baseQuote = quoteForRules(rules, input.configuration);
+  const campaigns = await listActiveCampaignsForService(supabase, service.id);
+  const quote = applyCampaigns({
+    baseQuote,
+    campaigns,
+    viewer: {
+      isAnonymous: user.is_anonymous === true,
+      isVerified: user.is_anonymous !== true && Boolean(user.email_confirmed_at),
+    },
+  });
   if (quote.total <= 0) {
     return {
       ok: false,
@@ -357,7 +381,16 @@ export async function checkoutCart(input: {
     }
 
     const rules = await listPricingRulesForService(supabase, line.service_id);
-    const quote = quoteForRules(rules, cfg);
+    const baseQuote = quoteForRules(rules, cfg);
+    const campaigns = await listActiveCampaignsForService(supabase, line.service_id);
+    const quote = applyCampaigns({
+      baseQuote,
+      campaigns,
+      viewer: {
+        isAnonymous: user.is_anonymous === true,
+        isVerified: user.is_anonymous !== true && Boolean(user.email_confirmed_at),
+      },
+    });
     if (quote.total <= 0) {
       return {
         ok: false,

@@ -40,7 +40,11 @@ export function CartCheckoutForm({
   const grand = useMemo(() => {
     const currency = lines[0]?.quote.currency ?? "TRY";
     const total = lines.reduce((s, l) => s + l.quote.total, 0);
-    return { total, currency };
+    const originalTotal = lines.reduce(
+      (s, l) => s + (l.quote.originalTotal ?? l.quote.total),
+      0,
+    );
+    return { total, originalTotal, currency };
   }, [lines]);
 
   return (
@@ -65,7 +69,7 @@ export function CartCheckoutForm({
                 <p className="font-medium text-zinc-800 dark:text-zinc-100">{line.serviceName}</p>
                 <ul className="mt-2 space-y-1 text-zinc-600 dark:text-zinc-300">
                   {line.quote.lines.map((l) => (
-                    <li key={l.pricing_rule_id} className="flex justify-between gap-2">
+                    <li key={`${l.pricing_rule_id ?? "campaign"}:${l.label}`} className="flex justify-between gap-2">
                       <span>{l.title}</span>
                       <span className="shrink-0">
                         <PriceDisplay amount={l.line_total} currency={line.quote.currency} />
@@ -75,7 +79,11 @@ export function CartCheckoutForm({
                 </ul>
                 <div className="mt-2 flex justify-between text-sm font-semibold text-zinc-900 dark:text-zinc-50">
                   <span>Ara toplam</span>
-                  <PriceDisplay amount={line.quote.total} currency={line.quote.currency} />
+                  <PriceDisplay
+                    amount={line.quote.total}
+                    originalAmount={line.quote.originalTotal ?? null}
+                    currency={line.quote.currency}
+                  />
                 </div>
               </li>
             ))}
@@ -83,7 +91,11 @@ export function CartCheckoutForm({
         )}
         <div className="mt-4 flex items-center justify-between border-t border-zinc-200 pt-4 text-base font-semibold dark:border-zinc-800">
           <span>Genel toplam</span>
-          <PriceDisplay amount={grand.total} currency={grand.currency} />
+          <PriceDisplay
+            amount={grand.total}
+            originalAmount={grand.originalTotal}
+            currency={grand.currency}
+          />
         </div>
       </div>
 

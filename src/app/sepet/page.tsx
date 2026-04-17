@@ -10,7 +10,9 @@ import {
   CHECKOUT_VERIFICATION_ENABLED,
   needsCheckoutVerification,
 } from "@/lib/auth/checkoutVerification";
+import { listActiveCampaignsForService } from "@/lib/data/campaignsRepository";
 import { listPricingRulesForService } from "@/lib/data/pricingRulesRepository";
+import { applyCampaigns } from "@/lib/pricing/campaignEngine";
 import type { OrderConfiguration } from "@/lib/pricing/engine";
 import { quoteForRules } from "@/lib/pricing/engine";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -66,7 +68,16 @@ export default async function SepetPage({ searchParams }: PageProps) {
       ? await Promise.all(
           bundle.items.map(async (it) => {
             const rules = await listPricingRulesForService(supabase, it.service_id);
-            const quote = quoteForRules(rules, it.configuration as OrderConfiguration);
+            const baseQuote = quoteForRules(rules, it.configuration as OrderConfiguration);
+            const campaigns = await listActiveCampaignsForService(supabase, it.service_id);
+            const quote = applyCampaigns({
+              baseQuote,
+              campaigns,
+              viewer: {
+                isAnonymous: user.is_anonymous === true,
+                isVerified: user.is_anonymous !== true && Boolean(user.email_confirmed_at),
+              },
+            });
             return {
               id: it.id,
               serviceName: it.services?.name ?? "Hizmet",
@@ -137,6 +148,7 @@ export default async function SepetPage({ searchParams }: PageProps) {
               slug,
               imgUrl: publicServiceAssetUrl(coverPath),
               total: priced?.quote.total ?? 0,
+              originalTotal: priced?.quote.originalTotal ?? null,
               currency: priced?.quote.currency ?? "TRY",
             };
           })}
